@@ -1,7 +1,5 @@
 package asteroids;
 
-import org.lwjgl.opengl.GL11;
-
 import psilox.graphics.Color;
 import psilox.graphics.Draw;
 import psilox.graphics.Shape;
@@ -9,6 +7,7 @@ import psilox.input.Input;
 import psilox.math.Random;
 import psilox.math.Vec;
 import psilox.node.Node;
+import psilox.node.utility.Timer;
 
 public class Player extends Node {
 
@@ -18,13 +17,14 @@ public class Player extends Node {
 	
 	private Shape ship;
 	private Shape flame;
-	
 	private Vec velocity;
+	private Node bulletList;
 	
 	private boolean accelerating;
+	private boolean canShoot;
 	
 	public void enteredTree() {
-		ship = new Shape(GL11.GL_LINE_LOOP, new Vec[] {
+		ship = new Shape(Shape.OUTLINE, new Vec[] {
 			new Vec(0, 20), new Vec(-10, -20), new Vec(0, 0), new Vec(10, -20)
 		}, Color.WHITE);
 		
@@ -35,6 +35,10 @@ public class Player extends Node {
 		});
 		
 		velocity = new Vec(0);
+		bulletList = getParent().getChild("bulletList");
+		canShoot = true;
+		
+		addChild(new Timer(.2f, true, () -> canShoot = true));
 	}
 	
 	public void update() {
@@ -51,6 +55,12 @@ public class Player extends Node {
 		Vec viewSize = viewSize();
 		position.x = (position.x < 0 ? viewSize.x - 1 : position.x) % viewSize.x;
 		position.y = (position.y < 0 ? viewSize.y - 1 : position.y) % viewSize.y;
+		
+		if(Input.keyDown(Input.SPACE) && canShoot) {
+			bulletList.addChild(Bullet.fireFrom(this));
+			canShoot = false;
+			getChild(0, Timer.class).start();
+		}
 	}
 	
 	public void render() {
