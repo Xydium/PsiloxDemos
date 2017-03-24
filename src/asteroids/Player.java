@@ -35,10 +35,12 @@ public class Player extends Node {
 		});
 		
 		velocity = new Vec(0);
-		bulletList = getParent().getChild("bulletList");
+		bulletList = nodePath("/game/bulletList");
 		canShoot = true;
 		
-		addChild(new Timer(.2f, true, () -> canShoot = true));
+		Timer t;
+		addChild(t = new Timer(.2f, true, () -> canShoot = true));
+		t.tag = "bulletCooldown";
 	}
 	
 	public void update() {

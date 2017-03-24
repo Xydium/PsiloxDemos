@@ -2,6 +2,10 @@ package asteroids;
 
 import psilox.core.Config;
 import psilox.core.Psilox;
+import psilox.input.Input;
+import psilox.input.InputEvent;
+import psilox.input.InputEvent.InputState;
+import psilox.input.InputEvent.InputType;
 import psilox.node.Node;
 
 public class Game extends Node {
@@ -11,6 +15,8 @@ public class Game extends Node {
 	private Node bulletList;
 	
 	public void enteredTree() {
+		this.tag = "game";
+		
 		player = new Player();
 		player.tag = "player";
 		player.position.set(viewSize().half());
@@ -24,6 +30,8 @@ public class Game extends Node {
 		sky.tag = "sky";
 		
 		addChildren(sky, bulletList, player);
+		
+		setInputListening(true);
 	}
 	
 	public void update() {
@@ -32,6 +40,12 @@ public class Game extends Node {
 	
 	public void render() {
 		
+	}
+	
+	public void receiveInput(InputEvent ev) {
+		if(ev.matches(new InputEvent(InputType.KEYBOARD, Input.BACKSPACE, InputState.RELEASED))) {
+			printTree(Psilox.root);
+		}
 	}
 	
 	public static void main(String[] args) {

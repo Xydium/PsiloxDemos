@@ -32,7 +32,7 @@ void main() {
 		float r = mod(noise * 10, 1) - .4;
 		float g = mod(noise * 50, 1) + .5;
 		float b = mod(noise * 100, 1) + .7;
-		float a = sin(sin(ntime - coord.y) * cos(ntime + coord.x));
+		float a = abs(sin(sin(ntime - coord.y) * cos(ntime + coord.x))) * .5 + .3;
 		gl_FragColor = vec4(r, g, b, a);
 	} else {
 		gl_FragColor = color;	
