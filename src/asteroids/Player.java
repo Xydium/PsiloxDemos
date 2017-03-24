@@ -66,8 +66,8 @@ public class Player extends Node {
 	public void render() {
 		Draw.shape(ship);
 		if(accelerating) {
-			flame.getVerts()[6] = Random.floatVal(-3, 3); //x component of 3rd vec
-			flame.getVerts()[7] = Random.floatVal(-5, 5) - 40; //y component of 3rd vec
+			flame.getVerts()[6] = Random.floatVal(-3, 3);
+			flame.getVerts()[7] = Random.floatVal(-5, 5) - 40;
 			Draw.shape(flame);
 		}
 	}
