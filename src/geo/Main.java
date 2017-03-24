@@ -9,18 +9,25 @@ import psilox.node.Node;
 
 public class Main extends Node {
 
+	private Background bg;
 	private Player player;
 	private Node enemyList;
 	
 	public void enteredTree() {
+		bg = new Background();
+		bg.tag = "background";
+		bg.position.z = 0;
+		
 		player = new Player();
 		player.tag = "player";
 		player.position.set(viewSize().half());
 		player.position.z = 1;
 		
 		enemyList = new Node();
-		addChildren(enemyList, player);
+		enemyList.tag = "enemyList";
+		enemyList.position.z = 0.5f;
 		
+		addChildren(bg, enemyList, player);
 		spawnEnemy(2);
 	}
 	

@@ -8,7 +8,7 @@ import psilox.node.Node;
 
 public class Player extends Node {
 
-	private static final float MOVEMENT_SPEED = 30;
+	private static final float MOVEMENT_SPEED = 50;
 	
 	private Vec targetPosition;
 	
