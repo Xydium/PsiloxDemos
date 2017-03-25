@@ -1,6 +1,5 @@
 package geo;
 
-import psilox.core.Psilox;
 import psilox.graphics.Color;
 import psilox.graphics.Draw;
 import psilox.graphics.Shader;

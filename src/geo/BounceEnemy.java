@@ -24,32 +24,34 @@ public class BounceEnemy extends Node {
 	}
 	
 	public void update() {
+		reflectOffSides();
+		moveForward();
+	}
+	
+	public void render() {
+		Draw.shape(shape);
+	}
+
+	private void reflectOffSides() {
 		Vec viewSize = viewSize();
 		
 		if(!position.btn(Vec.ZERO, viewSize)) {
 			Vec normal = null;
 			
-			if(position.x < 0) {
-				normal = new Vec(1, 0); 
-			} else if(position.x > viewSize.x) {
-				normal = new Vec(-1, 0);
-			} else if(position.y < 0) {
-				normal = new Vec(0, -1);
-			} else if(position.y > viewSize.y) {
-				normal = new Vec(0, 1);
-			}
+			if(position.x < 0) normal = new Vec(1, 0); 
+			else if(position.x > viewSize.x) normal = new Vec(-1, 0);
+			else if(position.y < 0) normal = new Vec(0, -1);
+			else if(position.y > viewSize.y) normal = new Vec(0, 1);
 			
 			Vec velocity = Vec.angMag(rotation, 1);
 			rotation = velocity.dif(normal.scl(2 * normal.dot(velocity))).ang();
 		}
-		
+	}
+	
+	private void moveForward() {
 		Vec forward = Vec.angMag(rotation, MOVEMENT_SPEED);
 		position.add(forward);
 		trail.move(forward.scl(3));
-	}
-	
-	public void render() {
-		Draw.shape(shape);
 	}
 	
 }

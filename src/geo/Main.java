@@ -28,17 +28,24 @@ public class Main extends Node {
 		enemyList.position.z = 0.5f;
 		
 		addChildren(bg, enemyList, player);
-		spawnEnemy(2);
+		resetField();
 	}
 	
 	public void update() {
+		runSpawner();
+		runCollisions();
+	}
+	
+	private void runSpawner() {
 		if(Psilox.ticks() % 180 == 0) {
 			spawnEnemy(1);
 		}
 		if(Psilox.ticks() % 240 == 0) {
 			enemyList.getChild(0).freeSelf();
 		}
-		
+	}
+	
+	private void runCollisions() {
 		List<Node> enemies = enemyList.getChildrenUnsafe();
 		boolean reset = false;
 		for(Node e : enemies) {
@@ -48,10 +55,15 @@ public class Main extends Node {
 				break;
 			}
 		}
+		
 		if(reset) {
-			enemyList.removeAllChildren();
-			spawnEnemy(2);
+			resetField();
 		}
+	}
+	
+	private void resetField() {
+		enemyList.removeAllChildren();
+		spawnEnemy(2);
 	}
 	
 	private void spawnEnemy(int count) {
