@@ -1,18 +1,25 @@
 package asteroids;
 
+import java.awt.Font;
+
 import psilox.core.Config;
 import psilox.core.Psilox;
+import psilox.graphics.Color;
 import psilox.input.Input;
 import psilox.input.InputEvent;
 import psilox.input.InputEvent.InputState;
 import psilox.input.InputEvent.InputType;
 import psilox.node.Node;
+import psilox.node.ui.Label;
+import psilox.utils.Log;
+import psilox.utils.Pointer.StringPointer;
 
 public class Game extends Node {
 
 	private Player player;
 	private Sky sky;
 	private Node bulletList;
+	private StringPointer treeDisplay;
 	
 	public void enteredTree() {
 		this.tag = "game";
@@ -29,13 +36,26 @@ public class Game extends Node {
 		sky = new Sky();
 		sky.tag = "sky";
 		
-		addChildren(sky, bulletList, player);
+		treeDisplay = new StringPointer("");
+		Label treeLabel = new Label(Color.WHITE, new Font("Verdana", 0, 16), "%s", treeDisplay);
+		treeLabel.position.z = 5;
+		
+		addChildren(sky, bulletList, player, treeLabel);
 		
 		setInputListening(true);
 	}
 	
 	public void update() {
-		
+		if(Psilox.ticks() % 60 == 0) {
+			Log.getLines().clear();
+			printTree(Psilox.root);
+			String[] lines = Log.getLines().toArray(new String[Log.getLines().size()]);
+			String res = "";
+			for(String l : lines) {
+				res += l + "\n";
+			}
+			treeDisplay.set(res);
+		}
 	}
 	
 	public void render() {
