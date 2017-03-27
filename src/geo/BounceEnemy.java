@@ -17,7 +17,6 @@ public class BounceEnemy extends Node {
 	public void enteredTree() {
 		rotation = Random.floatVal(360);
 		shape = Shape.cquado(Vec.ZERO, new Vec(20), new Color(163, 80, 249));
-		shape.setMode(Shape.OUTLINE); //TODO: Remove in Psilox 0.9.4
 		trail = new Trail(new Color(163, 80, 249));
 		trail.position.set(-10, 0);
 		addChild(trail);

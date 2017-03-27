@@ -17,20 +17,27 @@ public class Player extends Node {
 	}
 	
 	public void update() {
+		updateTargetPosition();
+		moveTowardTarget();
+	}
+	
+	public void render() {
+		Draw.ellipse(new Color(238, 75, 181), Vec.ZERO, 20, 16);
+	}
+	
+	private void updateTargetPosition() {
 		if(Input.buttonDown(Input.BUTTON_LEFT)) {
 			targetPosition.set(Input.position);
 		}
-		
+	}
+	
+	private void moveTowardTarget() {
 		Vec diff = targetPosition.dif(position);
 		float dist = position.dst(targetPosition);
 		if(dist > .99) {
 			Vec disp = Vec.angMag(diff.ang(), dist > MOVEMENT_SPEED ? MOVEMENT_SPEED : dist);
 			position.add(disp);
 		}
-	}
-	
-	public void render() {
-		Draw.ellipse(new Color(238, 75, 181), Vec.ZERO, 20, 16);
 	}
 	
 }

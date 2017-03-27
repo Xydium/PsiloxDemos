@@ -2,8 +2,6 @@ VERTEX:
 
 #version 120
 
-precision highp float;
-
 void main() {
 	gl_Position = projection_transform * gl_Vertex;
 }
@@ -11,8 +9,6 @@ void main() {
 FRAGMENT:
 
 #version 120
-
-precision highp float;
 
 uniform vec4 low;
 uniform vec4 high;
