@@ -15,9 +15,9 @@ public class Background extends Node {
 	
 	public void enteredTree() {
 		shader = new Shader("geo/background.shd");
-		shader.setUniform4f("low", new Color(5, 0, 35, 155));
-		shader.setUniform4f("high", new Color(15, 35, 75, 155));
-		shader.setUniform2f("res", viewSize().x / 5, viewSize().y / 5);
+		shader.setUniform4f("low", new Color(5, 0, 35, 255));
+		shader.setUniform4f("high", new Color(15, 35, 75, 255));
+		shader.setUniform2f("res", 2000, 2000);
 		shader.disable();
 	}
 	
