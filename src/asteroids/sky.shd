@@ -29,7 +29,7 @@ void main() {
 	vec2 coord = gl_FragCoord.xy;
 	if(noise > threshold) {
 		float ntime = time * noise * rand(coord.x) * rand(coord.y);
-		float r = mod(noise * 10, 1) - .4;
+		float r = mod(noise * 10, 1) + .4;
 		float g = mod(noise * 50, 1) + .5;
 		float b = mod(noise * 100, 1) + .7;
 		float a = abs(sin(sin(ntime - coord.y) * cos(ntime + coord.x))) * .5 + .3;

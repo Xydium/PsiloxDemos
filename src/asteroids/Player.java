@@ -12,7 +12,7 @@ import psilox.node.utility.Timer;
 public class Player extends Node {
 
 	private static final float ACCELERATION = .1f;
-	private static final float MAX_SPEED = 10;
+	private static final float MAX_SPEED = 20;
 	private static final float ROTATION = 3;
 	
 	private Shape ship;
@@ -31,7 +31,7 @@ public class Player extends Node {
 		flame = new Shape(Shape.QUAD, new Vec[] {
 			new Vec(0), new Vec(-10, -20), new Vec(0), new Vec(10, -20)	
 		}, new Color[] {
-			Color.BLUE, Color.YELLOW, Color.RED, Color.YELLOW
+			Color.CYAN.aAdj(.7f), Color.YELLOW.aAdj(.4f), Color.RED.aAdj(.17f), Color.YELLOW.aAdj(.4f)
 		});
 		
 		velocity = new Vec(0);
