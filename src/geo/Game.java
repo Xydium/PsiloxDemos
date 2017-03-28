@@ -7,7 +7,7 @@ import psilox.core.Psilox;
 import psilox.math.Random;
 import psilox.node.Node;
 
-public class Main extends Node {
+public class Game extends Node {
 
 	private Background bg;
 	private Player player;
@@ -75,7 +75,7 @@ public class Main extends Node {
 	}
 	
 	public static void main(String[] args) {
-		Psilox.start(new Config("Geo", 1280, 720, false), new Main());
+		Psilox.start(new Config("Geo", 1280, 720, false), new Game());
 	}
 	
 }

@@ -16,6 +16,7 @@ public class MovingSquare extends Node {
 	
 	public void enteredTree() {
 		square = cquadf(ZERO, new Vec(100), RED, BLUE, GREEN, WHITE);
+		position.set(viewSize().half());
 	}
 	
 	public void update() {

@@ -13,7 +13,7 @@ public class Sky extends Node {
 	
 	public void enteredTree() {
 		sky = new Shader("asteroids/sky.shd");
-		sky.setUniform4f("color", new Color(2, 2, 10));
+		sky.setUniform4f("color", new Color(0, 5, 10));
 		sky.setUniform1f("threshold", .97f);
 		sky.disable();
 	}
