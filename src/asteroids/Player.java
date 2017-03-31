@@ -24,7 +24,7 @@ public class Player extends Node {
 	private boolean canShoot;
 	
 	public void enteredTree() {
-		ship = new Shape(Shape.OUTLINE, new Vec[] {
+		ship = new Shape(Shape.POLY, new Vec[] {
 			new Vec(0, 20), new Vec(-10, -20), new Vec(0, 0), new Vec(10, -20)
 		}, Color.WHITE);
 		

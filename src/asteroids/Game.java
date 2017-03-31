@@ -59,6 +59,10 @@ public class Game extends Node {
 	
 	public void update() {
 		runCollisions();
+		
+		if(Psilox.ticks() % 60 == 0) {
+			printTree(Psilox.root);
+		}
 	}
 	
 	private void runCollisions() {

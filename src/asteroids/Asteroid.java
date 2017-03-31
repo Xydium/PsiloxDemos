@@ -34,7 +34,7 @@ public class Asteroid extends Node {
 	public void render() {
 		distort.enable();
 		distort.setUniform1f("time", Psilox.ticks() / 100f);
-		Draw.ellipse(Color.BROWN, Vec.ZERO, small ? 20 : 40, 10);
+		Draw.ellipsef(Color.BROWN, Vec.ZERO, small ? 20 : 40, 10);
 		distort.disable();
 	}
 	
