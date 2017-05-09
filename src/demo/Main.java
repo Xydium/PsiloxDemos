@@ -28,7 +28,9 @@ public class Main extends Node {
 	
 	private void registerDemo(String name, Node demo) {
 		demos.put(name, demo);
-		Button b = new Button(new Vec(250, 25), name, () -> Psilox.changeScene(demo));
+		Button b = new Button(new Vec(250, 25), name, () -> {
+			if(Psilox.root.getChild(0).getClass() == Main.class) Psilox.changeScene(demo);
+		});
 		b.position.set(new Vec(50));
 		b.position.y += 30 * (demos.size() - 1);
 		addChild(b);
