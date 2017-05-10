@@ -21,15 +21,33 @@ import psilox.utils.Pointer.FloatPointer;
 public class Particles extends Node {
 	
 	private List<Particle> particles;
+	private int targetPointer;
 	private FloatPointer timeScale; 
+	private FloatPointer gravScale;
+	private FloatPointer[] pointers;
+	private FloatPointer simTime;
+	
+	private Font basic;
 	
 	public void enteredTree() {
 		particles = new ArrayList<Particle>();
-		printTree(Psilox.root);
 		
-		Label l = new Label(Color.GREEN, new Font("Verdana", 0, 16), "TimeScale: %.2f", timeScale = new FloatPointer(10));
+		basic = new Font("Verdana", 0, 16);
+		
+		Label l = new Label(Color.CYAN, basic, "TimeScale: %.2f", timeScale = new FloatPointer(10));
 		l.position.set(10, viewSize().y - 20, 1);
 		addChild(l);
+		
+		l = new Label(Color.GREEN, basic, "GravScale: %.2f", gravScale = new FloatPointer(250));
+		l.position.set(10, viewSize().y - 40, 1);
+		addChild(l);
+		
+		l = new Label(Color.WHITE, basic, "Simulation Time: %.2f", simTime = new FloatPointer(0));
+		l.position.set(viewSize().x / 2, viewSize().y - 20, 1);
+		l.setAnchor(Anchor.MM);
+		addChild(l);
+		
+		pointers = new FloatPointer[] {timeScale, gravScale};
 	}
 	
 	public void update() {
@@ -42,15 +60,30 @@ public class Particles extends Node {
 				particles.add(p);
 			}
 		}
-		if(Input.keyDown(Input.LEFT) && timeScale.get() > 0) {
-			timeScale.sub(0.5f);
-		} else if(Input.keyDown(Input.RIGHT) && timeScale.get() < 100) {
-			timeScale.add(0.5f);
+		if(Input.keyDown(Input.LEFT)) {
+			pointers[targetPointer].sub(0.5f);
+		} else if(Input.keyDown(Input.RIGHT)) {
+			pointers[targetPointer].add(0.5f);
+		}
+		if(Input.keyTap(Input.DOWN)) {
+			targetPointer = (targetPointer + 1) % pointers.length;
+			List<Label> labels = getChildren(Label.class);
+			for(Label l : labels) {
+				if(l.getColor() != Color.WHITE) {
+					l.setColor(Color.GREEN);
+				}
+			}
+			labels.get(targetPointer).setColor(Color.CYAN);
+		}
+		if(Input.keyTap(Input.SPACE)) {
+			timeScale.set(0f);
 		}
 	}
 	
 	public void render() {
 		Psilox.deltaTime *= timeScale.get();
+		
+		simTime.add(Psilox.deltaTime);
 		
 		Vec ip = viewSize().half();
 		
@@ -58,10 +91,6 @@ public class Particles extends Node {
 			Particle p = particles.get(i);
 			if(p != null) {
 				p.render(ip);
-				if(p.dead) {
-					particles.remove(i);
-					i--;
-				}
 			}
 		}
 		
@@ -76,31 +105,35 @@ public class Particles extends Node {
 	}
 	
 	private class Particle {
-		private static final float MAX_LIFE = 360;
+		private static final float MAX_LIFE = 3600;
 		private final Color DEAD_COLOR = Color.BLUE.aAdj(0);
 		private final Color LIVE_COLOR = Color.WHITE.rAdj(.9f).gAdj(.9f);
 		
 		public Vec pos = new Vec(0);
 		public Vec vel = new Vec(0);
-		public boolean dead;
 		public float lifetime;
 		
 		public void render(Vec gravPoint) {
-			GL11.glLineWidth(3);
-			Draw.line(mix(LIVE_COLOR, DEAD_COLOR, lifetime / MAX_LIFE), pos, pos.dif(vel.scl(Psilox.deltaTime)));
-			GL11.glLineWidth(1);
+			if(lifetime >= 0) {
+				Color c = mix(LIVE_COLOR, DEAD_COLOR, lifetime / MAX_LIFE);
+				GL11.glLineWidth(3);
+				Draw.line(c, pos, pos.dif(vel.scl(Psilox.deltaTime)));
+				GL11.glLineWidth(1);
+				GL11.glPointSize(5);
+				Draw.point(c, pos);
+				GL11.glPointSize(1);
+			}
 			
 			Vec gravEffect = pos.dif(gravPoint);
-			if(gravEffect.mag() < 100) { dead = true; return; }
-			else if(gravEffect.mag() < 115) vel.mul(.97f);
+			
 			float r = Mathf.pow(gravEffect.mag(), 2);
-			gravEffect.mul(-250 / r);
+			r = r < 1 ? 1 : r;
+			gravEffect.mul(-gravScale.get() / r / r);
 			vel.add(gravEffect.scl(Psilox.deltaTime));
 							
-			lifetime = Mathf.clm(lifetime + Psilox.deltaTime, 0, MAX_LIFE);
-			
 			pos.add(vel.scl(Psilox.deltaTime));
-			dead = lifetime > MAX_LIFE || !pos.btn(Vec.ZERO, new Vec(Psilox.config().width, Psilox.config().height));
+			
+			lifetime = Mathf.clm(lifetime + Psilox.deltaTime, -Integer.MAX_VALUE, MAX_LIFE);
 		}
 		
 		private Color mix(Color a, Color b, float t) {
