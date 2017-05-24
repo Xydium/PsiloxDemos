@@ -21,6 +21,6 @@
 	<classpathentry kind="lib" path="lwjgl/lwjgl-stb-sources.jar"/>
 	<classpathentry kind="lib" path="lwjgl/lwjgl-stb.jar"/>
 	<classpathentry kind="lib" path="lwjgl/lwjgl.jar"/>
-	<classpathentry kind="lib" path="Psilox.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Psilox"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
