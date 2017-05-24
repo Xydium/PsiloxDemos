@@ -8,14 +8,17 @@ import psilox.node.Node;
 
 public class Space extends Node {
 
+	public static final int WIDTH = 1280, HEIGHT = 720;
+	
 	public Space(String tag) { super(tag); }
 	
 	public void enteredTree() {
 		addChild(new Background("background"));
+		addChild(new Ship("player"));
 	}
 	
 	public static void main(String[] args) {
-		Psilox.start(new Window("Space", 1280, 720, false, false, Color.BLACK), new Space("space"));
+		Psilox.start(new Window("Space", WIDTH, HEIGHT, false, false, Color.BLACK), new Space("space"));
 	}
 	
 }
