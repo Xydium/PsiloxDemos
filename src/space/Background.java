@@ -16,6 +16,7 @@ public class Background extends Node {
 		texture = new Texture("space/assets/blue.png");
 		textureRegion = new Rect(0, 0, Space.WIDTH, Space.HEIGHT);
 		modulate = new Color(155, 205, 255);
+		position.z = layer("background");
 	}
 	
 }

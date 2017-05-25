@@ -8,17 +8,30 @@ import psilox.node.Node;
 
 public class Ship extends Node {
 
+	private static final Vec EMITTER_LEFT = new Vec(-45, 5);
+	private static final Vec EMITTER_RIGHT = new Vec(45, 5);
+	
+	private static Texture shipTexture;
+	
 	private static final float ACCELERATION = 0.1f;
 	private static final float TURN_RATE = 4f; 
 	
 	public Vec velocity;
 	
+	public Node laserList; 
+	
 	public Ship(String tag) {
 		super(tag);
-		position = new Vec(Space.WIDTH / 2, Space.HEIGHT / 2, 1);
-		texture = new Texture("space/assets/ship.png");
+		position = new Vec(Space.WIDTH / 2, Space.HEIGHT / 2, layer("ship"));
+		if(shipTexture == null)
+			shipTexture = new Texture("space/assets/ship.png");
+		texture = shipTexture;
 		dimensions = new Vec(texture.getWidth(), texture.getHeight());
 		velocity = new Vec(0);
+	}
+	
+	public void enteredTree() {
+		laserList = nodePath("./laserList");
 	}
 	
 	public void update() {
@@ -33,7 +46,8 @@ public class Ship extends Node {
 		}
 		
 		if(Input.keyDown(Input.SPACE) && Psilox.ticks % 10 == 0) {
-			getParent().addChild(new Laser("laser", position, rotation));
+			laserList.addChild(new Laser("laser", position.sum(EMITTER_LEFT.rot(-rotation)), rotation));
+			laserList.addChild(new Laser("laser", position.sum(EMITTER_RIGHT.rot(-rotation)), rotation));
 		}
 		
 		position.add(velocity);

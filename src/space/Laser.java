@@ -12,7 +12,7 @@ public class Laser extends Node {
 	public Laser(String tag, Vec position, float rotation) {
 		super(tag);
 		this.position.set(position);
-		position.z = 0.5f;
+		this.position.z = layer("lasers");
 		this.rotation = rotation;
 		if(laserTexture == null) laserTexture = new Texture("space/assets/laser_normal.png");
 		texture = laserTexture;
