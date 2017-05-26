@@ -6,6 +6,8 @@ import psilox.input.Input;
 import psilox.math.Vec;
 import psilox.node.Node;
 
+import static psilox.audio.Audio.*;
+
 public class Ship extends Node {
 
 	private static final Vec EMITTER_LEFT = new Vec(-45, 5);
@@ -48,6 +50,7 @@ public class Ship extends Node {
 		if(Input.keyDown(Input.SPACE) && Psilox.ticks % 10 == 0) {
 			laserList.addChild(new Laser("laser", position.sum(EMITTER_LEFT.rot(-rotation)), rotation));
 			laserList.addChild(new Laser("laser", position.sum(EMITTER_RIGHT.rot(-rotation)), rotation));
+			playSound("laser", 0.5);
 		}
 		
 		position.add(velocity);

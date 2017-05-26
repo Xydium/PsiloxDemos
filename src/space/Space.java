@@ -3,11 +3,9 @@ package space;
 import psilox.core.Psilox;
 import psilox.core.Window;
 import psilox.graphics.Color;
-import psilox.math.Mat4;
-import psilox.math.Vec;
 import psilox.node.Node;
-import psilox.utility.Log;
-import psilox.utility.Time;
+
+import static psilox.audio.Audio.*;
 
 public class Space extends Node {
 
@@ -21,13 +19,14 @@ public class Space extends Node {
 		addLayer("lasers", 2);
 		addLayer("ship", 3);
 		
+		addSound("laser", "space/assets/laser.wav");
+		addMusic("song", "space/assets/tenfour_cavebouncer.wav");
+		
+		loopMusic("song", 0.25);
+		
 		addChild(new Background("background"));
 		addChild(new Node("laserList"));
 		addChild(new Ship("player"));
-	}
-	
-	public void update() {
-		print("%f %f %f", Psilox.dt, Psilox.du, Psilox.df);
 	}
 	
 	public static void main(String[] args) {
