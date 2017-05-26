@@ -1,6 +1,7 @@
 package space;
 
 import psilox.core.Psilox;
+import psilox.graphics.Color;
 import psilox.graphics.Texture;
 import psilox.input.Input;
 import psilox.math.Vec;
