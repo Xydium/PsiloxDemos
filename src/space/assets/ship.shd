@@ -1,0 +1,88 @@
+VERTEX:
+#version 400 core
+
+in vec3 v_position;
+in vec2 v_tcoord;
+
+out vec2 f_tcoord;
+out vec2 f_dimensions;
+
+uniform mat4 u_projection;
+uniform mat4 u_transform;
+uniform vec2 u_dimensions;
+uniform bool u_tex_valid;
+uniform bool u_region_valid;
+uniform vec2 u_tex_dimensions;
+uniform vec4 u_tex_region;
+uniform vec2 u_anchor;
+uniform float u_time;
+
+float constrained(float v, float min, float range) {
+	return range * v + min;
+}
+
+void main(void) {
+	vec4 anchored = vec4(v_position, 1) - vec4(u_anchor, 0, 0);
+	anchored.x *= u_dimensions.x;
+	anchored.y *= u_dimensions.y;
+	gl_Position = u_projection * u_transform * anchored;
+	if(u_tex_valid && u_region_valid) {
+		f_tcoord.x = constrained(v_tcoord.x, u_tex_region.x / u_tex_dimensions.x, u_tex_region.z / u_tex_dimensions.x);
+		f_tcoord.y = constrained(v_tcoord.y, u_tex_region.y / u_tex_dimensions.y, u_tex_region.w / u_tex_dimensions.y);
+	} else {
+		f_tcoord = v_tcoord;
+	}
+	f_dimensions = u_dimensions;
+}
+
+FRAGMENT:
+#version 400 core
+
+in vec2 f_tcoord;
+in vec2 f_dimensions;
+
+out vec4 f_fragcolor;
+
+uniform sampler2D u_texture;
+uniform vec4 u_modulate;
+uniform bool u_tex_valid;
+uniform vec4 u_outline_color;
+uniform vec2 u_step_size;
+uniform float u_step_mult;
+uniform bool u_noise;
+uniform float u_time;
+
+vec2 vmod(vec2 v) {
+	return vec2(mod(v.x, 1.0), mod(v.y, 1.0));
+}
+
+float getA() {
+	float alpha = 4*texture(u_texture, f_tcoord).a;
+    alpha -= texture(u_texture, f_tcoord + vec2( u_step_size.x * u_step_mult, 0.0f ) ).a;
+    alpha -= texture(u_texture, f_tcoord + vec2( -u_step_size.x * u_step_mult, 0.0f ) ).a;
+    alpha -= texture(u_texture, f_tcoord + vec2( 0.0f, u_step_size.y * u_step_mult) ).a;
+    alpha -= texture(u_texture, f_tcoord + vec2( 0.0f, -u_step_size.y *u_step_mult) ).a;
+    return alpha;
+}
+
+float rand(float n){return fract(sin(n) * 43758.5453123);}
+
+float noise(float p){
+	float fl = floor(p);
+  float fc = fract(p);
+	return mix(rand(fl), rand(fl + 1.0), fc);
+}
+
+void main(void) {
+	vec4 tcol = texture(u_texture, f_tcoord) * u_modulate;
+	float a = getA();
+	if(a > .001 || (tcol.a < .9 && tcol.a > 0)) {
+		f_fragcolor = u_outline_color;
+	} else {
+		f_fragcolor = tcol;
+		if(u_noise) {
+			f_fragcolor = mix(f_fragcolor, vec4(noise(f_fragcolor.x * f_fragcolor.y * u_time * 7), u_outline_color.yzw), 
+			noise(f_fragcolor.x * f_fragcolor.y * u_time * 5) / 2);
+		}
+	}
+}

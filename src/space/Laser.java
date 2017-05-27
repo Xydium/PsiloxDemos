@@ -17,7 +17,7 @@ public class Laser extends Node {
 	static {
 		laserTexture = new Texture("space/assets/laser_normal.png");
 		laserShader = new Shader("space/assets/laser.shd");
-		laserShader.setUniform1f("u_frequency", 10f);
+		laserShader.setUniform1f("u_frequency", 20f);
 		laserShader.setUniform1f("u_amplitude", 0.2f);
 	}
 	

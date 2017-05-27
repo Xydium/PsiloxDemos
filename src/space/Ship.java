@@ -1,13 +1,15 @@
 package space;
 
+import static psilox.audio.Audio.*;
+
 import psilox.core.Psilox;
 import psilox.graphics.Color;
+import psilox.graphics.Shader;
 import psilox.graphics.Texture;
 import psilox.input.Input;
 import psilox.math.Vec;
 import psilox.node.Node;
-
-import static psilox.audio.Audio.*;
+import psilox.utility.Time;
 
 public class Ship extends Node {
 
@@ -15,20 +17,28 @@ public class Ship extends Node {
 	private static final Vec EMITTER_RIGHT = new Vec(45, 5);
 	
 	private static Texture shipTexture;
+	private static Shader shipShader;
+	
+	static {
+		shipTexture = new Texture("space/assets/ship.png");
+		shipShader = new Shader("space/assets/ship.shd");
+		shipShader.setUniform4f("u_outline_color", Color.GREEN);
+		shipShader.setUniform2f("u_step_size", 1.0f / shipTexture.getWidth(), 1.0f / shipTexture.getHeight());
+		shipShader.setUniform1i("u_noise", 1);
+	}
 	
 	private static final float ACCELERATION = 0.1f;
 	private static final float TURN_RATE = 4f; 
 	
 	public Vec velocity;
 	
-	public Node laserList; 
+	public Node laserList;
 	
 	public Ship(String tag) {
 		super(tag);
 		position = new Vec(Space.WIDTH / 2, Space.HEIGHT / 2, layer("ship"));
-		if(shipTexture == null)
-			shipTexture = new Texture("space/assets/ship.png");
 		texture = shipTexture;
+		shader = shipShader;
 		dimensions = new Vec(texture.getWidth(), texture.getHeight());
 		velocity = new Vec(0);
 	}
@@ -58,6 +68,17 @@ public class Ship extends Node {
 		
 		position.x = (position.x + Space.WIDTH) % Space.WIDTH;
 		position.y = (position.y + Space.HEIGHT) % Space.HEIGHT;
+		
+		if(Input.keyTap(Input.ENTER)) {
+			if(shader == null) shader = shipShader;
+			else shader = null;
+			
+			playSound(shader == null ? "shield_down" : "shield_up", 0.5);
+		}
+	}
+	
+	public void setUniforms(Shader s) {
+		s.setUniform1f("u_step_mult", (float) Time.flipFlop(0, Time.SECOND) * 3);
 	}
 	
 }
