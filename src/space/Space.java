@@ -23,6 +23,7 @@ public class Space extends Node {
 		addSound("shield_down", "space/assets/shield_down.wav");
 		addSound("shield_up", "space/assets/shield_up.wav");
 		addMusic("song", "space/assets/tenfour_cavebouncer.wav");
+		addMusic("engine", "space/assets/engine_loop.wav");
 		
 		loopMusic("song", 0.25);
 		

@@ -46,46 +46,16 @@ out vec4 f_fragcolor;
 uniform sampler2D u_texture;
 uniform vec4 u_modulate;
 uniform bool u_tex_valid;
-uniform vec4 u_outline_color;
-uniform vec2 u_step_size;
-uniform float u_step_mult;
-uniform bool u_noise;
 uniform float u_time;
 
 vec2 vmod(vec2 v) {
 	return vec2(mod(v.x, 1.0), mod(v.y, 1.0));
 }
 
-float getA() {
-	float alpha = 4*texture(u_texture, f_tcoord).a;
-    alpha -= texture(u_texture, f_tcoord + vec2( u_step_size.x * u_step_mult, 0.0f ) ).a;
-    alpha -= texture(u_texture, f_tcoord + vec2( -u_step_size.x * u_step_mult, 0.0f ) ).a;
-    alpha -= texture(u_texture, f_tcoord + vec2( 0.0f, u_step_size.y * u_step_mult) ).a;
-    alpha -= texture(u_texture, f_tcoord + vec2( 0.0f, -u_step_size.y *u_step_mult) ).a;
-    return alpha;
-}
-
-float rand(float n){return fract(sin(n) * 43758.5453123);}
-
-float noise(float p){
-	float fl = floor(p);
-  float fc = fract(p);
-	return mix(rand(fl), rand(fl + 1.0), fc);
-}
-
 void main(void) {
-	vec4 tcol = texture(u_texture, f_tcoord) * u_modulate;
-	float a = getA();
-	if(a > .001 || (tcol.a < .9 && tcol.a > 0)) {
-		f_fragcolor = u_outline_color;
+	if(u_tex_valid) {
+		f_fragcolor = (texture(u_texture, vmod(f_tcoord)) * u_modulate);
 	} else {
-		f_fragcolor = tcol;
-		if(u_noise) {
-			f_fragcolor = mix(f_fragcolor, 
-				vec4(noise(f_fragcolor.x * f_fragcolor.y * u_time * 7), 
-				     noise(f_fragcolor.x * f_fragcolor.y * u_time * 2.5),
-			         noise(f_fragcolor.x * f_fragcolor.y * u_time * 3.5), 1), 
-			noise(f_fragcolor.x * f_fragcolor.y * u_time * 5) / 2);
-		}
+		f_fragcolor = u_modulate;
 	}
 }

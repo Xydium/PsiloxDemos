@@ -1,0 +1,77 @@
+VERTEX:
+#version 400 core
+
+in vec3 v_position;
+in vec2 v_tcoord;
+
+out vec2 f_tcoord;
+out vec2 f_dimensions;
+
+uniform mat4 u_projection;
+uniform mat4 u_transform;
+uniform vec2 u_dimensions;
+uniform bool u_tex_valid;
+uniform bool u_region_valid;
+uniform vec2 u_tex_dimensions;
+uniform vec4 u_tex_region;
+uniform vec2 u_anchor;
+uniform float u_time;
+
+float constrained(float v, float min, float range) {
+	return range * v + min;
+}
+
+void main(void) {
+	vec4 anchored = vec4(v_position, 1) - vec4(u_anchor, 0, 0);
+	anchored.x *= u_dimensions.x;
+	anchored.y *= u_dimensions.y;
+	gl_Position = u_projection * u_transform * anchored;
+	if(u_tex_valid && u_region_valid) {
+		f_tcoord.x = constrained(v_tcoord.x, u_tex_region.x / u_tex_dimensions.x, u_tex_region.z / u_tex_dimensions.x);
+		f_tcoord.y = constrained(v_tcoord.y, u_tex_region.y / u_tex_dimensions.y, u_tex_region.w / u_tex_dimensions.y);
+	} else {
+		f_tcoord = v_tcoord;
+	}
+	f_dimensions = u_dimensions;
+}
+
+FRAGMENT:
+#version 400 core
+
+in vec2 f_tcoord;
+in vec2 f_dimensions;
+
+out vec4 f_fragcolor;
+
+uniform sampler2D u_texture;
+uniform vec4 u_modulate;
+uniform bool u_tex_valid;
+uniform float u_time;
+
+void main(void) {
+	vec2 uv = f_tcoord;
+	float time = u_time * 10;
+	vec2 n0Uv = vec2(uv.x*1.4 + 0.01, uv.y + time*0.69);
+    vec2 n1Uv = vec2(uv.x*0.5 - 0.033, uv.y*2.0 + time*0.12);
+    vec2 n2Uv = vec2(uv.x*0.94 + 0.02, uv.y*3.0 + time*0.61);
+    float n0 = (texture(u_texture, n0Uv).w-0.5)*2.0;
+    float n1 = (texture(u_texture, n1Uv).w-0.5)*2.0;
+    float n2 = (texture(u_texture, n2Uv).w-0.5)*2.0;
+    float noiseA = clamp(n0 + n1 + n2, -1.0, 1.0);
+    vec2 n0UvB = vec2(uv.x*0.7 - 0.01, uv.y + time*0.27);
+    vec2 n1UvB = vec2(uv.x*0.45 + 0.033, uv.y*1.9 + time*0.61);
+    vec2 n2UvB = vec2(uv.x*0.8 - 0.02, uv.y*2.5 + time*0.51);
+    float n0B = (texture(u_texture, n0UvB).w-0.5)*2.0;
+    float n1B = (texture(u_texture, n1UvB).w-0.5)*2.0;
+    float n2B = (texture(u_texture, n2UvB).w-0.5)*2.0;
+    float noiseB = clamp(n0B + n1B + n2B, -1.0, 1.0);
+    vec2 finalNoise = vec2(noiseA, noiseB);
+    float perturb = (1.0 - uv.y) * 0.35 + 0.02;
+    finalNoise = (finalNoise * perturb) + uv - 0.02;
+    vec4 color = texture(u_texture, finalNoise);
+    color = vec4(color.x*1.0, color.y*0.9, (color.y/color.x)*0.9, 1.0);
+    finalNoise = clamp(finalNoise, 0.05, 1.0);
+    color.w = texture(u_texture, finalNoise).z*2.0;
+    color.w = color.w*texture(u_texture, uv).z;
+    f_fragcolor = color;
+}

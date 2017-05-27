@@ -7,6 +7,7 @@ import psilox.graphics.Color;
 import psilox.graphics.Shader;
 import psilox.graphics.Texture;
 import psilox.input.Input;
+import psilox.math.Anchor;
 import psilox.math.Vec;
 import psilox.node.Node;
 import psilox.utility.Time;
@@ -22,13 +23,14 @@ public class Ship extends Node {
 	static {
 		shipTexture = new Texture("space/assets/ship.png");
 		shipShader = new Shader("space/assets/ship.shd");
-		shipShader.setUniform4f("u_outline_color", Color.GREEN);
+		shipShader.setUniform4f("u_outline_color", new Color(0xD59EFCFF));
 		shipShader.setUniform2f("u_step_size", 1.0f / shipTexture.getWidth(), 1.0f / shipTexture.getHeight());
 		shipShader.setUniform1i("u_noise", 1);
 	}
 	
-	private static final float ACCELERATION = 0.1f;
+	private static final float ACCELERATION = 0.2f;
 	private static final float TURN_RATE = 4f; 
+	private static final float MAX_SPEED = 15;
 	
 	public Vec velocity;
 	
@@ -45,11 +47,22 @@ public class Ship extends Node {
 	
 	public void enteredTree() {
 		laserList = nodePath("./laserList");
+		Flame f = new Flame("flame");
+		f.position.set(0, -38, -0.1f);
+		f.scale = new Vec(0.15, 0.3);
+		f.rotation = 180;
+		f.anchor = Anchor.BOTTOM_MIDDLE;
+		addChild(f);
 	}
 	
 	public void update() {
-		if(Input.keyDown(Input.W)) {
+		if(getChild(0).visible = Input.keyDown(Input.W)) {
 			velocity.add(Vec.UP.rot(-rotation).scl(ACCELERATION));
+			velocity = velocity.clm(MAX_SPEED);
+			if(!isMusicPlaying("engine")) 
+				loopMusic("engine", 0.10);
+		} else {
+			stopMusic("engine");
 		}
 		
 		if(Input.keyDown(Input.D)) {
@@ -61,7 +74,7 @@ public class Ship extends Node {
 		if(Input.keyDown(Input.SPACE) && Psilox.ticks % 10 == 0) {
 			laserList.addChild(new Laser("laser", position.sum(EMITTER_LEFT.rot(-rotation)), rotation));
 			laserList.addChild(new Laser("laser", position.sum(EMITTER_RIGHT.rot(-rotation)), rotation));
-			playSound("laser", 0.5);
+			playSound("laser", 0.25);
 		}
 		
 		position.add(velocity);
