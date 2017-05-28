@@ -3,6 +3,7 @@ package space;
 import psilox.core.Psilox;
 import psilox.core.Window;
 import psilox.graphics.Color;
+import psilox.input.Input;
 import psilox.node.Node;
 
 import static psilox.audio.Audio.*;
@@ -32,8 +33,10 @@ public class Space extends Node {
 		addChild(new Ship("player"));
 	}
 	
-	public static void main(String[] args) {
-		Psilox.start(new Window("Space", WIDTH, HEIGHT, true, true, true, Color.BLACK), new Space("space"));
+	public void update() {
+		if(Input.keyTap(Input.ESCAPE)) {
+			Psilox.changeScene(new Menu("menu"));
+		}
 	}
 	
 }
