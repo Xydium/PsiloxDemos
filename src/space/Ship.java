@@ -49,7 +49,7 @@ public class Ship extends Node {
 		laserList = nodePath("./laserList");
 		Flame f = new Flame("flame");
 		f.position.set(0, -38, -0.1f);
-		f.scale = new Vec(0.15, 0.3);
+		f.scale = new Vec(0.12, 0.3);
 		f.rotation = 180;
 		f.anchor = Anchor.BOTTOM_MIDDLE;
 		addChild(f);

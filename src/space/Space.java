@@ -9,7 +9,7 @@ import static psilox.audio.Audio.*;
 
 public class Space extends Node {
 
-	public static final int WIDTH = 1280, HEIGHT = 720;
+	public static final int WIDTH = 1920, HEIGHT = 1080;
 	
 	public Space(String tag) { super(tag); }
 	
@@ -33,7 +33,7 @@ public class Space extends Node {
 	}
 	
 	public static void main(String[] args) {
-		Psilox.start(new Window("Space", WIDTH, HEIGHT, false, false, true, Color.BLACK), new Space("space"));
+		Psilox.start(new Window("Space", WIDTH, HEIGHT, true, true, true, Color.BLACK), new Space("space"));
 	}
 	
 }
