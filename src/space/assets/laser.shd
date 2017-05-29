@@ -70,4 +70,5 @@ void main(void) {
 	} else {
 		f_fragcolor = u_modulate;
 	}
+	if(f_fragcolor.b > .7) f_fragcolor.b = 0;
 }

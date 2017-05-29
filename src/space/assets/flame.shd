@@ -47,10 +47,11 @@ uniform sampler2D u_texture;
 uniform vec4 u_modulate;
 uniform bool u_tex_valid;
 uniform float u_time;
+uniform float u_time_mult;
 
 void main(void) {
 	vec2 uv = f_tcoord;
-	float time = u_time * 2;
+	float time = u_time * u_time_mult;
 	vec2 n0Uv = vec2(uv.x*1.4 + 0.01, uv.y + time*0.69);
     vec2 n1Uv = vec2(uv.x*0.5 - 0.033, uv.y*2.0 + time*0.12);
     vec2 n2Uv = vec2(uv.x*0.94 + 0.02, uv.y*3.0 + time*0.61);

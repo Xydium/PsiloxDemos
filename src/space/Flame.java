@@ -15,11 +15,18 @@ public class Flame extends Node {
 		flameShader = new Shader("space/assets/flame.shd");
 	}
 	
+	public float timeMult;
+	
 	public Flame(String tag) { 
 		super(tag);
 		texture = flameTexture;
 		dimensions = texture.getDimensions();
 		shader = flameShader;
+		timeMult = 3;
+	}
+	
+	public void setUniforms(Shader s) {
+		s.setUniform1f("u_time_mult", timeMult);
 	}
 	
 }

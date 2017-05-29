@@ -52,6 +52,7 @@ public class Ship extends Node {
 		f.scale = new Vec(0.12, 0.3);
 		f.rotation = 180;
 		f.anchor = Anchor.BOTTOM_MIDDLE;
+		f.timeMult = 5;
 		addChild(f);
 	}
 	

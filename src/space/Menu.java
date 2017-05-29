@@ -8,62 +8,80 @@ import psilox.core.Psilox;
 import psilox.core.Window;
 import psilox.graphics.Color;
 import psilox.graphics.Shader;
+import psilox.graphics.Texture;
 import psilox.input.Input;
 import psilox.math.Anchor;
 import psilox.math.Vec;
 import psilox.node.Label;
 import psilox.node.Node;
+import psilox.utility.Time;
 
 public class Menu extends Node {
 
 	private static Shader glitchShader;
+	private static Shader postShader;
+	private static Texture glass;
 	
 	private Node selected;
 	
 	public Menu(String tag) { super(tag); }
 	
 	public void enteredTree() {
-		if(glitchShader == null) glitchShader = new Shader("space/assets/glitch.shd");
+		if(glitchShader == null) {
+			glitchShader = new Shader("space/assets/glitch.shd");
+			postShader = new Shader("space/assets/post.shd");
+			glass = new Texture("space/assets/glass.png");
+		}
 		
 		Background bg = new Background("background");
 		bg.position.z = -2;
 		addChild(bg);
 		
 		Label title = new Label("title", Color.WHITE, new Font("Verdana", 0, 72), "Asteroids");
-		title.position = new Vec(Space.WIDTH / 2, Space.HEIGHT - 100);
+		title.position = new Vec(50, Space.HEIGHT - 50);
 		title.shader = glitchShader;
+		title.modulate = new Color(0xD59EFCFF);
+		title.anchor = Anchor.TOP_LEFT;
 		addChild(title);
 		
 		Node selection = new Node("selection");
-		selection.position = new Vec(Space.WIDTH / 2, 497, -1);
+		selection.position = new Vec(0, 100, -1);
 		addChild(selection);
 		
 		Flame f1 = new Flame("f1");
+		f1.position.y = -3;
 		f1.anchor = Anchor.BOTTOM_MIDDLE;
 		f1.rotation = 90;
-		f1.scale = new Vec(0.3, 0.7);
+		f1.scale = new Vec(0.3, 2);
 		selection.addChild(f1);
 		
-		Flame f2 = new Flame("f2");
-		f2.anchor = Anchor.BOTTOM_MIDDLE;
-		f2.rotation = -90;
-		f2.scale = new Vec(-0.3, 0.7);
-		selection.addChild(f2);
-		
 		Label play = new Label("play", Color.WHITE, new Font("Verdana", 0, 36), "Play");
-		play.position = new Vec(Space.WIDTH / 2, 500);
+		play.position = new Vec(50, 100);
 		play.shader = glitchShader;
+		play.modulate = title.modulate;
+		play.anchor = Anchor.MIDDLE_LEFT;
 		addChild(play);
 		
 		Label quit = new Label("quit", Color.WHITE, new Font("Verdana", 0, 36), "Quit");
-		quit.position = new Vec(Space.WIDTH / 2, 400);
+		quit.position = new Vec(50, 50);
 		quit.shader = glitchShader;
+		quit.modulate = title.modulate;
+		quit.anchor = Anchor.MIDDLE_LEFT;
 		addChild(quit);
 		
 		selected = play;
 		
 		addSound("change_selection", "space/assets/shield_down.wav");
 		addSound("select", "space/assets/shield_up.wav");
+		
+		addMusic("menu_song", "space/assets/tenfour_cavebouncer.wav");
+		loopMusic("menu_song", 0.25);
+		
+		Space.window.setPostProcess(postShader, glass, this);
+	}
+	
+	public void exitedTree() {
+		stopMusic("menu_song");
 	}
 	
 	public void update() {
@@ -77,7 +95,7 @@ public class Menu extends Node {
 		if(selected.RUID == getChild("play").RUID) {
 			if(changeSelection) {				
 				selected = getChild("quit");
-				selection.position.y = 395;
+				selection.position.y = 50;
 				playSound("change_selection");
 			} else if(select) {
 				playSound("select");
@@ -86,7 +104,7 @@ public class Menu extends Node {
 		} else {
 			if(changeSelection) {
 				selected = getChild("play");
-				selection.position.y = 495;
+				selection.position.y = 100;
 				playSound("change_selection");
 			} else if(select) {
 				playSound("select");
@@ -95,8 +113,12 @@ public class Menu extends Node {
 		}
 	}
 	
+	public void setUniforms(Shader s) {
+		s.setUniform1f("u_norm_fac", (float) Time.flipFlop(0, Time.SECOND));
+	}
+	
 	public static void main(String[] args) {
-		Psilox.start(new Window("Space", Space.WIDTH, Space.HEIGHT, true, true, true, Color.BLACK), new Menu("menu"));
+		Psilox.start(Space.window = new Window("Space", Space.WIDTH, Space.HEIGHT, true, true, true, Color.BLACK), new Menu("menu"));
 	}
 	
 }

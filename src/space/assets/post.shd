@@ -44,17 +44,11 @@ in vec2 f_dimensions;
 out vec4 f_fragcolor;
 
 uniform sampler2D u_texture;
+uniform sampler2D u_aid;
 uniform vec4 u_modulate;
 uniform bool u_tex_valid;
 uniform float u_time;
-
-float rand(float n){return fract(sin(n) * 43758.5453123);}
-
-float noise(float p){
-	float fl = floor(p);
-  float fc = fract(p);
-	return mix(rand(fl), rand(fl + 1.0), fc);
-}
+uniform float u_norm_fac;
 
 vec2 vmod(vec2 v) {
 	return vec2(mod(v.x, 1.0), mod(v.y, 1.0));
@@ -62,8 +56,12 @@ vec2 vmod(vec2 v) {
 
 void main(void) {
 	if(u_tex_valid) {
-		f_fragcolor = texture(u_texture, vmod(f_tcoord));
-		f_fragcolor.xyz = mix(f_fragcolor.xyz, u_modulate.xyz, f_tcoord.y);
+		vec4 normal = 2*texture(u_aid, vmod(f_tcoord)) - 1;
+		normal *= u_norm_fac;
+		f_fragcolor = texture(u_texture, vmod(f_tcoord + normal.xy / 100)) * u_modulate;
+		normal = 2*texture(u_aid, vmod(vec2(1 - f_tcoord.x, f_tcoord.y))) - 1;
+		normal *= u_norm_fac;
+		f_fragcolor = mix(texture(u_texture, vmod(f_tcoord + normal.xy / 100)) * u_modulate, vec4(1,1,1,1), length(normal.xy) / 100);
 	} else {
 		f_fragcolor = u_modulate;
 	}
