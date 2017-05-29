@@ -114,7 +114,7 @@ public class Menu extends Node {
 	}
 	
 	public void setUniforms(Shader s) {
-		s.setUniform1f("u_norm_fac", (float) Time.flipFlop(0, Time.SECOND));
+		s.setUniform1f("u_norm_fac", 1 - (Psilox.ticks / 120.0f) % 1.0f);
 	}
 	
 	public static void main(String[] args) {
