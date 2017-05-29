@@ -61,7 +61,7 @@ void main(void) {
 		f_fragcolor = texture(u_texture, vmod(f_tcoord + normal.xy / 100)) * u_modulate;
 		normal = 2*texture(u_aid, vmod(vec2(1 - f_tcoord.x, f_tcoord.y))) - 1;
 		normal *= u_norm_fac;
-		f_fragcolor = mix(texture(u_texture, vmod(f_tcoord + normal.xy / 100)) * u_modulate, vec4(1,1,1,1), length(normal.xy) / 100);
+		f_fragcolor = texture(u_texture, vmod(f_tcoord + normal.xy / 100)) * u_modulate;
 	} else {
 		f_fragcolor = u_modulate;
 	}
