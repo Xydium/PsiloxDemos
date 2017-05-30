@@ -17,10 +17,8 @@ import psilox.node.Node;
 import psilox.utility.Time;
 
 public class Menu extends Node {
-
+	
 	private static Shader glitchShader;
-	private static Shader postShader;
-	private static Texture glass;
 	
 	private Node selected;
 	
@@ -29,8 +27,6 @@ public class Menu extends Node {
 	public void enteredTree() {
 		if(glitchShader == null) {
 			glitchShader = new Shader("space/assets/glitch.shd");
-			postShader = new Shader("space/assets/post.shd");
-			glass = new Texture("space/assets/glass.png");
 		}
 		
 		Background bg = new Background("background");
@@ -76,8 +72,6 @@ public class Menu extends Node {
 		
 		addMusic("menu_song", "space/assets/tenfour_cavebouncer.wav");
 		loopMusic("menu_song", 0.25);
-		
-		Space.window.setPostProcess(postShader, glass, this);
 	}
 	
 	public void exitedTree() {
@@ -113,12 +107,9 @@ public class Menu extends Node {
 		}
 	}
 	
-	public void setUniforms(Shader s) {
-		s.setUniform1f("u_norm_fac", 1 - (Psilox.ticks / 120.0f) % 1.0f);
-	}
 	
 	public static void main(String[] args) {
-		Psilox.start(Space.window = new Window("Space", Space.WIDTH, Space.HEIGHT, true, true, true, Color.BLACK), new Menu("menu"));
+		Psilox.start(Space.window = new Window("Space", Space.WIDTH, Space.HEIGHT, false, false, true, Color.BLACK), new Menu("menu"));
 	}
 	
 }

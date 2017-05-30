@@ -49,6 +49,7 @@ uniform vec4 u_modulate;
 uniform bool u_tex_valid;
 uniform float u_time;
 uniform float u_norm_fac;
+uniform float u_vign_fac;
 
 vec2 vmod(vec2 v) {
 	return vec2(mod(v.x, 1.0), mod(v.y, 1.0));
@@ -72,10 +73,10 @@ void main(void) {
 		} else {
 			normal *= u_norm_fac;
 			f_fragcolor = mix(texture(u_texture, vmod(f_tcoord + normal.xy / 100)) * u_modulate, vec4(1,1,1,1), 
-			pow((length(normal.xy) / 3), 2));
+			pow((length(normal.xy) / 2), 2));
 		}
 		float dist = length(gl_FragCoord.xy / f_dimensions.xy - vec2(.5, .5));
-		f_fragcolor = mix(f_fragcolor, vec4(1, 0, 0, 1), (dist) * u_norm_fac);
+		f_fragcolor = mix(f_fragcolor, vec4(1, 0, 0, 1), (dist) * u_vign_fac);
 	} else {
 		f_fragcolor = u_modulate;
 	}

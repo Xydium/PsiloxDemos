@@ -82,12 +82,21 @@ public class Ship extends Node {
 		
 		position.x = (position.x + Space.WIDTH) % Space.WIDTH;
 		position.y = (position.y + Space.HEIGHT) % Space.HEIGHT;
-		
-		if(Input.keyTap(Input.ENTER)) {
-			if(shader == null) shader = shipShader;
-			else shader = null;
-			
-			playSound(shader == null ? "shield_down" : "shield_up", 0.5);
+	}
+	
+	private boolean shattered;
+	public void takeHit() {
+		if(shader == shipShader) {
+			shader = null;
+			playSound("shield_down", 0.5);
+		} else {
+			if(!shattered) {
+				shattered = true;
+				((Space) getParent()).shatter();
+				playSound("shatter", 0.7);
+			} else {
+				Psilox.changeScene(new Menu("menu"));
+			}
 		}
 	}
 	
